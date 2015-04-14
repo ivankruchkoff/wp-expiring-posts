@@ -154,12 +154,15 @@ class EXP_Expiring_Posts {
 		if ( 'expired' == $post_status ) {
 			update_post_meta( $post_id, 'exp_pending_expiration', true );
 
-			// post is scheduled to expire, enable expiration and set hook. Exception is if the post has
-			// just transitioned from expired to publish
+		// post is scheduled to expire, enable expiration and set hook. Exception is if the post has
+		// just transitioned from expired to publish
 		} elseif ( !isset( $_POST['exp-enable'] ) && !( 'expired' === $_POST['hidden_post_status'] && 'publish' === $post_status ) ) {
 			$this->schedule_post_expiration( $post_id );
 
-			// post expiration is not enabled. Clear any expiring hooks and disable expiration
+		// Post was already expired, but a user decided to re-publish it with later expiration date
+		} elseif ( $_POST['original_post_status'] == 'expired' && $post_status == 'publish' && strtotime( $expiration_date ) >= current_time( 'timestamp' ) ) {
+			$this->schedule_post_expiration( $post_id );
+		// post expiration is not enabled. Clear any expiring hooks and disable expiration
 		} else {
 			$this->unschedule_expired_post( $post_id );
 		}
