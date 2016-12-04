@@ -1,0 +1,8 @@
+{
+  "name": "spp/expiring-posts",
+  "description": "NewsCorpAU Expiring Posts Plugin",
+  "type": "wordpress-plugin",
+  "require": {
+    "composer/installers": "~1.0"
+  }
+}

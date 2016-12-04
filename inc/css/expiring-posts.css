@@ -1,7 +1,17 @@
-.curtime #exp-timestamp {
-	background-repeat: no-repeat;
-	background-position: left center;
-	padding: 2px 0 1px 20px;
+.curtime #exp-timestamp:before {
+	font: 400 20px/1 dashicons;
+	speak: none;
+	display: inline-block;
+	padding: 0 2px 0 0;
+	top: 0;
+	left: -1px;
+	position: relative;
+	vertical-align: top;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-decoration: none !important;
+	content: "\f145";
+	color: #82878c;
 }
 
 #exp-timestampdiv select {
@@ -21,15 +31,20 @@
 	line-height: 23px;
 }
 
-#exp-jj, #exp-hh, #exp-mn {
+.exp-year {
+	width: 3.4em !important;
+}
+
+.exp-date input {
+	padding: 1px;
+	font-size: 12px;
 	width: 2em;
 }
 
-#exp-aa {
-	width: 3.4em;
+.exp-buttons {
+	padding-top: 8px;
 }
 
-#exp-aa, #exp-jj, #exp-hh, #exp-mn {
-	padding: 1px;
-	font-size: 12px;
+.exp-cancel-timestamp {
+	padding-left: 4px;
 }

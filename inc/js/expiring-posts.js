@@ -1,100 +1,106 @@
+/* globals AdminExpiringPosts */
+
 jQuery(document).ready( function($) {
 
-	// AdminExpiringPosts is a localized variable
-
 	// exp-timestamp is not on this page, don't run script
-	if ( ! document.getElementById( 'exp-timestamp' ) )
+	if ( ! document.getElementById( 'exp-timestamp' ) ) {
 		return;
+	}
 
-	var $postStatus = $( document.getElementById( 'post_status' )),
-			saveButton = document.getElementById('save-post');
-
-	// JS hack to append Expired to the post status editor
-	$postStatus.append( $( document.getElementById( 'expired-status' ) ) );
-	// reset post_status value after appending expired option
-	$postStatus.val( AdminExpiringPosts.post_status );
+	//append Expired to the post status editor
+	$( '#post_status' )
+		.append( $('<option>')
+					.val(AdminExpiringPosts.expired_status)
+					.text(AdminExpiringPosts.expired_text)
+		).val( AdminExpiringPosts.post_status );
 
 	// Set button text to "Update" instead of "Publish" when post is expired
-	if ( 'expired' == AdminExpiringPosts.post_status ){
-		document.getElementById('post-status-display').innerHTML = AdminExpiringPosts.expired_text;
-		saveButton.value = AdminExpiringPosts.save_text;
-		$( saveButton ).on('click', function(){
-			setTimeout( function(){
-				saveButton.value= AdminExpiringPosts.save_text;
-			}, 10 );
-		});
+	if ( 'expired' == AdminExpiringPosts.post_status ) {
+		$( '#post-status-display' ).text( AdminExpiringPosts.expired_text );
+
+		$( '#save-post' )
+			.val(AdminExpiringPosts.save_text)
+			.on('click', setTimeout( function() {
+				saveButton.value = AdminExpiringPosts.save_text;
+				}, 10 )
+			);
 	}
 
+	var $timestamp = $( '#exp-timestamp' ),
+		$editTimestamp = $( '#exp-edit-timestamp' ),
+		$expDisable = $('#expiry-disable' ),
+		expEnableValue = $expDisable.is(':checked');
 
-	var $timestamp = $( document.getElementById( 'exp-timestamp' ) ),
-	    $timestampDiv = $( document.getElementById( 'exp-timestampdiv' ) ),
-	    $editTimestamp = $( document.querySelector( '.exp-edit-timestamp' ) ),
-	    $expEnable = $(document.getElementById( 'exp-enable' ) ),
-	    expEnableValue = ( $expEnable.attr('checked') ) ? $expEnable.attr('checked') : false,
-	    $expMM = $(document.getElementById( 'exp-mm' ) ),
-	    $expJJ = $(document.getElementById( 'exp-jj' ) ),
-	    $expAA = $(document.getElementById( 'exp-aa' ) ),
-	    $expHH = $(document.getElementById( 'exp-hh' ) ),
-	    $expMN = $(document.getElementById( 'exp-mn' ) );
+	$timestamp.find('[name^=expiry]').each(function(){
+		$(this).attr('data-initial-value', $(this).val());
+	} );
 
 	// Cancel Button
-	$( document.querySelector( '.exp-cancel-timestamp' ) ).on( 'click', expCancelTimestamp );
+	$('.exp-cancel-timestamp' ).on( 'click', expCancelTimestamp );
 
 	// Save Button
-	$( document.querySelector( '.exp-save-timestamp' ) ).on( 'click', expSaveTimestamp );
+	$( '.exp-save-timestamp' ).on( 'click', expSaveTimestamp );
 
 	// show / hide time adjustor and Edit button
-	$editTimestamp.on( 'click', editTimestampClick );
+	$editTimestamp.on( 'click', openEditExpirationDate );
 
 	function expCancelTimestamp() {
-		$timestampDiv.slideUp("normal");
-		$expMM.val($( document.getElementById( 'hidden_exp-mm' ) ).val());
-		$expJJ.val($( document.getElementById( 'hidden_exp-jj' ) ).val());
-		$expAA.val($( document.getElementById( 'hidden_exp-aa' ) ).val());
-		$expHH.val($( document.getElementById( 'hidden_exp-hh' ) ).val());
-		$expMN.val($( document.getElementById( 'hidden_exp-mn' ) ).val());
-		$expEnable.attr( 'checked', expEnableValue );
-		$editTimestamp.show();
-		return false;
+		$timestamp.find('[name^=expiry]').each(function(){
+			$(this).val($(this).attr('data-initial-value'));
+		});
+
+		$expDisable.attr( 'checked', expEnableValue );
+		expSaveTimestamp();
 	}
 
-	function expSaveTimestamp() { // crazyhorse - multiple ok cancels
-		var aa = $expAA.val(), mm = $expMM.val(), jj = $expJJ.val(), hh = $expHH.val(), mn = $expMN.val(),
-		    newD = new Date( aa, mm - 1, jj, hh, mn );
+	function expSaveTimestamp() {console.log($expDisable);
+		if ( $expDisable.is( ':checked' ) ) {
+			$timestamp
+				.empty()
+				.append(AdminExpiringPosts.expires_text)
+				.append($('<b />').text('never'));
 
-		if ( ! ( expEnableValue = $expEnable.attr('checked') ) )
-			expEnableValue = false;
-
-		if ( newD.getFullYear() != aa || (1 + newD.getMonth()) != mm || newD.getDate() != jj || newD.getMinutes() != mn ) {
-			$('.exp-timestamp-wrap', '#exp-timestampdiv').addClass('form-invalid');
-			return false;
-		} else {
-			$('.exp-timestamp-wrap', '#exp-timestampdiv').removeClass('form-invalid');
+			return closeEditExpirationDate();
 		}
 
-		$timestampDiv.slideUp("normal");
-		$editTimestamp.show();
+		var year = $('#expiry_year').val(),
+			month = $('#expiry_month').val(),
+			day = $('#expiry_day').val(),
+			hour = $('#expiry_hour').val(),
+			minute = $('#expiry_minute').val(),
+			newDate = new Date( year, month - 1, day, hour, minute );
 
-		if ( expEnableValue ) {
-			$timestamp.html( AdminExpiringPosts.expires_never );
+		if(!newDate) {
+			$('#exp-timestampdiv').addClass('form-invalid');
 		} else {
-			$timestamp.html(
-					AdminExpiringPosts.expires_on + ' <b>' +
-							$( '#exp-mm option[value="' + mm + '"]' ).text() + ' ' +
-							jj + ', ' +
-							aa + ' @ ' +
-							hh + ':' +
-							mn + '</b> '
+			$('#exp-timestampdiv').removeClass('form-invalid');
+		}
+
+		closeEditExpirationDate();
+
+		$timestamp
+			.empty().append(
+				AdminExpiringPosts.expires_text
+			).append(
+				$('<b />').text($( '#expiry_month option:selected' ).attr('data-short') + ' ' +
+						year + ', ' +
+						day + ' @ ' +
+						hour + ':' +
+						minute
+				)
 			);
-		}
+
 		return false;
 	}
 
-	function editTimestampClick() {
-		if ($timestampDiv.is(":hidden")) {
-			$timestampDiv.slideDown("normal");
-			$editTimestamp.hide();
-		}
+	function closeEditExpirationDate() {
+		$( '#exp-timestampdiv' ).slideUp( "normal" );
+		$editTimestamp.show();
+	}
+
+	function openEditExpirationDate() {
+		$( '#exp-timestampdiv' ).slideDown( "normal" );
+		$editTimestamp.hide();
 		return false;
 	}
 
