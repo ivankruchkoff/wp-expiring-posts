@@ -107,6 +107,16 @@ class EXP_Expiring_Posts {
 	 */
 	function save_expiration_date( $post_id ) {
 
+		/**
+		 * Provides a filter to let the expiry date feature be conditionally controlled.
+		 *
+		 * @param bool   By default, do not disable
+		 * @param int    Post ID
+		 */
+		if ( true === apply_filters( 'exp_disable_expiration_for_this_post', false, $post_id) ) {
+			return;
+		}
+
 		// Check its not an auto save
 		if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE )
 			return;
@@ -173,6 +183,18 @@ class EXP_Expiring_Posts {
 		if ( 'post.php' != $page && 'post-new.php' != $page )
 			return;
 
+		global $post;
+		/**
+		 * Provides a filter to let the expiry date feature be conditionally controlled.
+		 *
+		 * @param bool   By default, do not disable
+		 * @param int    Post ID
+		 */
+		if ( true === apply_filters( 'exp_disable_expiration_for_this_post', false, $post->ID ) ) {
+			return;
+		}
+
+
 		wp_enqueue_script( 'admin-expiring-posts', EXPIRING_POSTS_URL . '/inc/js/expiring-posts.js', array( 'jquery' ) );
 
 		wp_localize_script( 'admin-expiring-posts', 'AdminExpiringPosts', array(
@@ -192,6 +214,15 @@ class EXP_Expiring_Posts {
 	 */
 	function post_meta_box() {
 		global $post;
+		/**
+		 * Provides a filter to let the expiry date feature be conditionally controlled.
+		 *
+		 * @param bool   By default, do not disable
+		 * @param int    Post ID
+		 */
+		if ( true === apply_filters( 'exp_disable_expiration_for_this_post', false, $post->ID ) ) {
+			return;
+		}
 
 		if ( 0 == $post->ID )
 			return;
