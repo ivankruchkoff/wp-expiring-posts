@@ -113,7 +113,7 @@ class EXP_Expiring_Posts {
 		 * @param bool   By default, do not disable
 		 * @param int    Post ID
 		 */
-		if ( true === apply_filters( 'exp_disable_expiration_for_this_post', false, $post_id) ) {
+		if ( true === apply_filters( 'exp_disable_expiration_for_this_post', false, $post_id ) ) {
 			return;
 		}
 
