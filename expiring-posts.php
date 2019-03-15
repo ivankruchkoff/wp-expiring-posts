@@ -194,7 +194,6 @@ class EXP_Expiring_Posts {
 			return;
 		}
 
-
 		wp_enqueue_script( 'admin-expiring-posts', EXPIRING_POSTS_URL . '/inc/js/expiring-posts.js', array( 'jquery' ) );
 
 		wp_localize_script( 'admin-expiring-posts', 'AdminExpiringPosts', array(
