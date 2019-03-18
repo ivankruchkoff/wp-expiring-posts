@@ -3,9 +3,9 @@
 /*
 Plugin Name: Expiring Posts
 Plugin URI: http://www.10up.com
-Description: Add new status for expired posts.
+Description: Allows a post to move to a new status for expired posts on a specified date.
 Author: Tanner Moushey, Ivan Kruchkoff (10up LLC)
-Version: 1.1
+Version: 1.2
 Author URI: http://www.10up.com
 
 GNU General Public License, Free Software Foundation <http://creativecommons.org/licenses/GPL/2.0/>
