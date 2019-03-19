@@ -511,6 +511,16 @@ class EXP_Expiring_Posts {
 	function get_expiring_posts() {
 		global $wpdb;
 
+		/**
+		 * Provides a filter to let the expiry date feature be conditionally controlled.
+		 *
+		 * @param bool   By default, do not disable
+		 * @param int    Post ID
+		 */
+		if ( true === apply_filters( 'exp_disable_expiration_for_this_post', false, $post_id ) ) {
+			return;
+		}
+
 		$expiring_posts = array();
 
 		$querystr = "
