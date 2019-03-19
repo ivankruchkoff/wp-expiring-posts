@@ -18,14 +18,14 @@ Once that date is reached, the post is marked as expired and is no longer visibl
 * a filter called `exp_disable_expiration_for_this_post` exists to disable this feature on a per-post basis.
 
 ### FAQ
-##### If I turn on this plugin, what will happen to my old posts?
-Nothing. The default state is to never expire.
+##### If I enable this plugin, what will happen to my existing posts?
+Nothing, the posts current post state will remain unchanged.
 
-##### Will I be able to see any expired plugins?
-Yes, they will be visible in the list of entries for you rpost type.
+##### Will I be able to see expired posts?
+Yes, they will be visible in the _expired_ view within the post entry list for your post type.
 
-##### Does this work with custom post types too?
+##### Will this plugin work with custom post types too?
 Yes.
 
-##### If I have posts set to expire and I use the filter to disable expiry for that post, what happens?
-The UI for control post expiry will not be shown, and the post will not expire. IOW the filter wins.
+##### If I have a post set to expire and I use the filter to disable expiry for a speicific post, what happens?
+When the `exp_disable_expiration_for_this_post` filter is used, the UI for control post expiry will not be shown, and the post will not expire. In other words, the filter overrides post expiration.
