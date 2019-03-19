@@ -511,16 +511,6 @@ class EXP_Expiring_Posts {
 	function get_expiring_posts() {
 		global $wpdb;
 
-		/**
-		 * Provides a filter to let the expiry date feature be conditionally controlled.
-		 *
-		 * @param bool   By default, do not disable
-		 * @param int    Post ID
-		 */
-		if ( true === apply_filters( 'exp_disable_expiration_for_this_post', false, $post_id ) ) {
-			return;
-		}
-
 		$expiring_posts = array();
 
 		$querystr = "
@@ -538,6 +528,16 @@ class EXP_Expiring_Posts {
 			return false;
 
 		foreach ( $post_ids as $post_id ) {
+
+			/**
+			 * Provides a filter to let the expiry date feature be conditionally controlled.
+			 *
+			 * @param bool   By default, do not disable
+			 * @param int    Post ID
+			 */
+			if ( true === apply_filters( 'exp_disable_expiration_for_this_post', false, $post_id ) ) {
+				continue;
+			}
 			$gmtime = get_gmt_from_date( get_post_meta( $post_id, 'exp_expiration_date', true ) );
 			if ( $expiration_date = strtotime( $gmtime ) )
 				$expiring_posts[$post_id] = $expiration_date;
