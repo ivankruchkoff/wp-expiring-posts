@@ -3,9 +3,9 @@
 /*
 Plugin Name: Expiring Posts
 Plugin URI: http://www.10up.com
-Description: Add new status for expired posts.
+Description: Allows a post to move to a new status for expired posts on a specified date.
 Author: Tanner Moushey, Ivan Kruchkoff (10up LLC)
-Version: 1.1
+Version: 1.2
 Author URI: http://www.10up.com
 
 GNU General Public License, Free Software Foundation <http://creativecommons.org/licenses/GPL/2.0/>
@@ -107,6 +107,16 @@ class EXP_Expiring_Posts {
 	 */
 	function save_expiration_date( $post_id ) {
 
+		/**
+		 * Provides a filter to let the expiry date feature be conditionally controlled.
+		 *
+		 * @param bool   By default, do not disable
+		 * @param int    Post ID
+		 */
+		if ( true === apply_filters( 'exp_disable_expiration_for_this_post', false, $post_id ) ) {
+			return;
+		}
+
 		// Check its not an auto save
 		if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE )
 			return;
@@ -173,6 +183,17 @@ class EXP_Expiring_Posts {
 		if ( 'post.php' != $page && 'post-new.php' != $page )
 			return;
 
+		global $post;
+		/**
+		 * Provides a filter to let the expiry date feature be conditionally controlled.
+		 *
+		 * @param bool   By default, do not disable
+		 * @param int    Post ID
+		 */
+		if ( true === apply_filters( 'exp_disable_expiration_for_this_post', false, $post->ID ) ) {
+			return;
+		}
+
 		wp_enqueue_script( 'admin-expiring-posts', EXPIRING_POSTS_URL . '/inc/js/expiring-posts.js', array( 'jquery' ) );
 
 		wp_localize_script( 'admin-expiring-posts', 'AdminExpiringPosts', array(
@@ -192,6 +213,15 @@ class EXP_Expiring_Posts {
 	 */
 	function post_meta_box() {
 		global $post;
+		/**
+		 * Provides a filter to let the expiry date feature be conditionally controlled.
+		 *
+		 * @param bool   By default, do not disable
+		 * @param int    Post ID
+		 */
+		if ( true === apply_filters( 'exp_disable_expiration_for_this_post', false, $post->ID ) ) {
+			return;
+		}
 
 		if ( 0 == $post->ID )
 			return;
@@ -361,7 +391,7 @@ class EXP_Expiring_Posts {
 		wp_transition_post_status( 'expired', $old_status, $post );
 
 		do_action( 'edit_post', $post->ID, $post );
-		do_action( 'save_post', $post->ID, $post );
+		do_action( 'save_post', $post->ID, $post, true );
 		do_action( 'wp_insert_post', $post->ID, $post );
 
 	}
@@ -498,6 +528,16 @@ class EXP_Expiring_Posts {
 			return false;
 
 		foreach ( $post_ids as $post_id ) {
+
+			/**
+			 * Provides a filter to let the expiry date feature be conditionally controlled.
+			 *
+			 * @param bool   By default, do not disable
+			 * @param int    Post ID
+			 */
+			if ( true === apply_filters( 'exp_disable_expiration_for_this_post', false, $post_id ) ) {
+				continue;
+			}
 			$gmtime = get_gmt_from_date( get_post_meta( $post_id, 'exp_expiration_date', true ) );
 			if ( $expiration_date = strtotime( $gmtime ) )
 				$expiring_posts[$post_id] = $expiration_date;
