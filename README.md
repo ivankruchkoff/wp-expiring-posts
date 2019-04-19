@@ -5,11 +5,11 @@ It does this by adding a new "Expires" date field in the Publish box.
 
 By default a post never expires:
 
-![Default expiry state](expiry_default.jpg)
+![Default expiry state](screenshot-1.jpg)
 
 But you can add a date instead:
 
-![Expiry set](expiry_set.jpg)
+![Expiry set](screenshot-2.jpg)
 
 Once that date is reached, the post is marked as expired and is no longer visible to the end user.
 
