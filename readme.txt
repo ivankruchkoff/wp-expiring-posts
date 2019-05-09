@@ -2,7 +2,7 @@
 Contributors: ivankk
 Tags: post-expiry, expiring-posts, expire, expiring, expire-posts
 Requires at least: 3.0.1
-Tested up to: 5.1
+Tested up to: 5.2
 Requires PHP: 5.3
 Stable tag: 1.2
 License: GPLv2 or later
