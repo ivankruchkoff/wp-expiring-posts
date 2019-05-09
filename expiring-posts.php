@@ -1,11 +1,10 @@
 <?php
-
 /*
 Plugin Name: Expiring Posts
 Plugin URI: https://github.com/ivankruchkoff/wp-expiring-posts
 Description: Allows a post to move to a new status for expired posts on a specified date.
 Author: Tanner Moushey, Ivan Kruchkoff, 10up
-Version: 1.2
+Version: 1.3
 Author URI: http://www.10up.com
 
 GNU General Public License, Free Software Foundation <http://creativecommons.org/licenses/GPL/2.0/>
