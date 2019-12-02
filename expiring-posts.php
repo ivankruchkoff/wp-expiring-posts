@@ -74,18 +74,19 @@ class EXP_Expiring_Posts {
 		add_action( 'save_post', array( $this, 'save_expiration_date' ) );
 
 		// Update all posts view to show expired status
-		add_action( 'display_post_states', array( $this, 'add_expiry_post_states' ) );
+		add_action( 'display_post_states', array( $this, 'add_expiry_post_states' ), 10, 2 );
 
 	}
 
 	/**
 	 * Display expired/expiring status in All Posts view
 	 *
-	 * @param $states
+	 * @param string[] $states States currently applied to a post.
+	 * @param WP_Post  $post   Post object.
+	 *
+	 * @return array
 	 */
-	function add_expiry_post_states( $states ) {
-		global $post;
-
+	function add_expiry_post_states( $states, $post ) {
 		$is_expired  = get_post_status( $post->ID ) === 'expired';
 		$is_expiring = get_post_meta( $post->ID, 'exp_pending_expiration', true );
 		$expiry_time = implode( get_post_meta( $post->ID, 'exp_expiration_date' ) );
